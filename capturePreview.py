@@ -53,15 +53,17 @@ from PIL import Image, ImageDraw, ImageFont
 from PyQt5 import QtCore, QtWidgets, QtGui
 from PyQt5.QtCore import Qt, pyqtSignal, QPoint, QRect
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QFileDialog
+from PyQt5.QtWidgets import QFileDialog, QPushButton
 
 import gphoto2 as gp
 
 THISSCRIPTDIR = os.path.dirname(os.path.realpath(__file__))
 sys.path.insert(1,THISSCRIPTDIR)
 ccgoo = __import__('camera-config-gui-oo')
+#outline = __import__('SampleOutline')
+#positioning = __import__('SamplePositioning')+
 NOCAMIMG = "cam-conf-no-cam.png"
-APPNAME = "cam-conf-view-gui.py"
+APPNAME = "IMIS Control System"
 
 patTrailDigSpace = re.compile(r'(?<=\.)(\d+?)(0+)(?=[^\d]|$)') # SO: 32348435
 
@@ -254,12 +256,12 @@ def do_capture_image(camera):
     camera_file = camera.file_get(
         path.folder, path.name, gp.GP_FILE_TYPE_NORMAL)
     # saving of image implied in current directory:
-    camera_file.save(path.name)
+    camera_file.save("Testo.jpg")
     camera.file_delete(path.folder, path.name)
     # reset configuration
     capturetarget_cfg.set_value(capturetarget)
     camera.set_config(cfg)
-    return path.name
+    return "Testo.jpg"#path.name
 
 
 def get_json_filters(args):
@@ -699,7 +701,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.splitter1 = QtWidgets.QSplitter(inqtsplittertype)
         self.splitter1.addWidget(inwidget1)
         self.splitter1.addWidget(inwidget2)
-        self.splitter1.setSizes([600, 600]); # equal splitter at start
+        self.splitter1.setOrientation(Qt.Vertical)
+        self.splitter1.setSizes([800,1]); # config mostly hidden at start
         self.mainwid.layout().addWidget(self.splitter1)
         self.mainwid.layout().update()
 
@@ -841,6 +844,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.setWindowTitle("Camera config {}".format(APPNAME))
         self.setMinimumWidth(1000)
         self.setMinimumHeight(600)
+        self.setFixedSize(1400,1000)
+        
         # quit shortcut
         self.quit_action = QtWidgets.QAction('&Quit', self)
         self.quit_action.setShortcuts(['Ctrl+Q', 'Ctrl+W'])
@@ -866,7 +871,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.frameconf.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.frameconf.setStyleSheet("padding: 0;") # nope
         self.frameconflayout = QtWidgets.QHBoxLayout(self.frameconf)
-        self.frameconflayout.setSpacing(0);
+        self.frameconflayout.setSpacing(100);
         self.frameconflayout.setContentsMargins(0,0,0,0);
         self.scrollconf = QtWidgets.QScrollArea(self)
         self.scrollconf.setWidgetResizable(False)
@@ -879,8 +884,22 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.mainwid = QtWidgets.QWidget()
         self.mainwid.setLayout(QtWidgets.QGridLayout())
+        self.mainwid.layout().setColumnStretch(0,1)
         self.setCentralWidget(self.mainwid)
         self.set_splitter(Qt.Horizontal, self.frameview, self.frameconf)
+
+        #set additional imis gui
+        #you can make the transparency work on click igaf
+        CaptureButton = QPushButton('', self)
+        CaptureButton.setToolTip('Take photo')
+        CaptureButton.setIcon(QtGui.QIcon('IMIS_Capture_Icon.png'))
+        btnSize = 150
+        CaptureButton.setIconSize(QtCore.QSize(btnSize,btnSize))
+        CaptureButton.setFixedSize(QtCore.QSize(btnSize,btnSize))
+        CaptureButton.setFlat(True)
+        CaptureButton.setStyleSheet("background-color: transparent;")
+        CaptureButton.move(1150,700)
+        #= QtWidgets.QAction('Capture &Image', self)
 
         self.camera = gp.Camera()
         self.ctx = gp.Context()
@@ -1091,6 +1110,7 @@ class MainWindow(QtWidgets.QMainWindow):
         imgfilename = do_capture_image(self.camera)
         imgpathname = os.path.realpath(imgfilename)
         image = Image.open(imgpathname)
+        #outline.outlineImage(imgpathname)
         image.load()
         self.new_image_sig.emit(image)
         self.lastImageType = 1
