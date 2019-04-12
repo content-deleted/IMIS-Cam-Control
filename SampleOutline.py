@@ -3,7 +3,6 @@ import numpy as np
 import cv2 as cv
 from matplotlib import pyplot as plt
 
-
 def outlineImage(filePath):
     # Select the image to be read
     img = cv.imread(filePath,0)
@@ -39,3 +38,8 @@ def outlineImage(filePath):
 
     plt.show()
 
+    return edges
+
+
+if __name__ == "__main__":
+    outlineImage("IMIS_Capture_Icon.png")

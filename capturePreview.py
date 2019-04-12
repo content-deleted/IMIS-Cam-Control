@@ -60,7 +60,8 @@ import gphoto2 as gp
 THISSCRIPTDIR = os.path.dirname(os.path.realpath(__file__))
 sys.path.insert(1,THISSCRIPTDIR)
 ccgoo = __import__('camera-config-gui-oo')
-#outline = __import__('SampleOutline')
+outline = __import__('SampleOutline')
+glare = __import__('SampleGlareDetect')
 #positioning = __import__('SamplePositioning')+
 NOCAMIMG = "cam-conf-no-cam.png"
 APPNAME = "IMIS Control System"
@@ -899,7 +900,7 @@ class MainWindow(QtWidgets.QMainWindow):
         CaptureButton.setFlat(True)
         CaptureButton.setStyleSheet("background-color: transparent;")
         CaptureButton.move(1150,700)
-        #= QtWidgets.QAction('Capture &Image', self)
+        CaptureButton.clicked.connect(self._capture_image)
 
         self.camera = gp.Camera()
         self.ctx = gp.Context()
@@ -1109,8 +1110,13 @@ class MainWindow(QtWidgets.QMainWindow):
         self.updateStatusBar() # clear last singleStatusMsg
         imgfilename = do_capture_image(self.camera)
         imgpathname = os.path.realpath(imgfilename)
+        
+        # Imis feedback
+        outline.outlineImage(imgpathname)
+        glare.checkImage(imgpathname)
+
+        # swap this path name with one of the saved cv2 images to load it instead
         image = Image.open(imgpathname)
-        #outline.outlineImage(imgpathname)
         image.load()
         self.new_image_sig.emit(image)
         self.lastImageType = 1
