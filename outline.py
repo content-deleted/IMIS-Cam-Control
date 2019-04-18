@@ -125,16 +125,16 @@ def outlineImage(filePath):
       error = 1
       errorMessage += "ERROR: Image is not centered vertically.\n"
       if(boundary_n > boundary_s):
-          errorMessage += "FIX: Please move the sample North.\n"
+          errorMessage += "FIX: Please move the sample North.\n\n"
       else:
-          errorMessage += "FIX: Please move the sample South.\n"
+          errorMessage += "FIX: Please move the sample South.\n\n"
   if(not(boundary_e >= low_horiz_range and boundary_e < high_horiz_range)):
       error = 1
-      errorMessage += "ERROR: Image is not centered horizontally."
+      errorMessage += "ERROR: Image is not centered horizontally.\n"
       if(boundary_e > boundary_w):
-          errorMessage += "FIX: Please move the sample East."
+          errorMessage += "FIX: Please move the sample East.\n"
       else:
-          errorMessage += "FIX: Please move the sample West."
+          errorMessage += "FIX: Please move the sample West.\n"
   if(error):
       print(errorMessage)
       #"""
@@ -143,9 +143,8 @@ def outlineImage(filePath):
       msg.setIcon(QMessageBox.Critical)
 
       msg.setText(errorMessage)
-      msg.setInformativeText("This is additional information")
       msg.setWindowTitle("Positioning Error")
-      msg.setDetailedText("The details are as follows:")
+      #msg.setDetailedText("The details are as follows:")
       msg.setStandardButtons(QMessageBox.Ok)
       msg.setEscapeButton(QMessageBox.Close)
       msg.exec_() 
