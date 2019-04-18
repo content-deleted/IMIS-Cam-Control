@@ -42,65 +42,46 @@ def checkImage(imageName):
     # Set the radius value for blur
     myRadiusVal = 11
 
+    # Apply a Gaussian blur to the image then find the brightest region
+    gray = cv2.GaussianBlur(gray, (myRadiusVal, myRadiusVal), 0)
+
+    ret,thr = cv2.threshold(gray,myThreshVal,255,cv2.THRESH_BINARY)
+    
     # the area of the image with the largest intensity value
     (minVal, maxVal, minLoc, maxLoc) = cv2.minMaxLoc(gray)
 
+    glareDetected = 0
     # Check if the largest intensity value is higher than our glare threshold
     if(maxVal > myThreshVal):
+        glareDetected = 1
+        #Draw circle on original image
+        image = orig.copy()
         # Circle the area with glare
-        cv2.circle(image, maxLoc, 5, (0, 0, 255), 2)
-     
-    # display the results of the naive attempt
-    #cv2.imshow("Naive", image)
+        cv2.circle(image, maxLoc, 201, (255, 0, 0), 45)
+        #cv2.imshow("meaty",image)
 
-    # apply a Gaussian blur to the image then find the brightest
-    # region
-    gray = cv2.GaussianBlur(gray, (myRadiusVal, myRadiusVal), 0)
+    #cv2.circle(image, maxLoc, myRadiusVal*2+1, (255, 0, 0), 2)
 
-    #
-    ret,thr = cv2.threshold(gray,myThreshVal,255,cv2.THRESH_BINARY)
-    #ret,thr = cv2.threshold(gray,0,255,cv2.THRESH_BINARY+cv2.THRESH_OTSU)
-    image = thr.copy()
-    #cv2.circle(image, maxLoc, args["radius"], (0, 0, 255), 2)
-    #cv2.imshow("Filter", image)
-    #
 
-    (minVal, maxVal, minLoc, maxLoc) = cv2.minMaxLoc(gray)
-    image = orig.copy()
-    #print "maxVal:",maxVal
-    cv2.circle(image, maxLoc, myRadiusVal*2+1, (255, 0, 0), 2)
+    if(glareDetected):
+        #"""
+        print("Glare is detected.")
+        #print("val", maxVal)
+        #plot Threshold and circled Glare
+        images = [thr,orig]
+        titles = ['Detected Glare (in white)','Original Image']
 
-     
-    # display the results of our newly improved method
-    #cv2.imshow("Robust", image)
+        plt.figure(num='Glare Detection')
 
-    # display original image
-    blur = gray.copy()
-    #cv2.imshow("Original", blur)
+        for i in range(2):
+            plt.subplot(1,2,i+1),plt.imshow(images[i],'gray')
+            plt.title(titles[i]), plt.xticks([]), plt.yticks([])
+            #plt.subplot(2,2,i*2+1),plt.imshow(images[i*2+1],'gray')
+            #plt.title(titles[i*2+1]), plt.xticks([]), plt.yticks([])
+        plt.show()
+        #"""
+    else:
+        print("No glare detected.")
 
-    """
-    # plot all the images 
-    images = [orig,blur,thr,image]
-    titles = ['Original','Blur','Threshold','Glare']
-
-    for i in range(4):
-        plt.subplot(1,4,i+1),plt.imshow(images[i],'gray')
-        plt.title(titles[i]), plt.xticks([]), plt.yticks([])
-        #plt.subplot(2,2,i*2+1),plt.imshow(images[i*2+1],'gray')
-        #plt.title(titles[i*2+1]), plt.xticks([]), plt.yticks([])
-    plt.show()
-    """
-
-    #"""
-    #plot Threshold and circled Glare
-    images = [thr,image]
-    titles = ['Threshold','Glare']
-
-    for i in range(2):
-        plt.subplot(1,2,i+1),plt.imshow(images[i],'gray')
-        plt.title(titles[i]), plt.xticks([]), plt.yticks([])
-        #plt.subplot(2,2,i*2+1),plt.imshow(images[i*2+1],'gray')
-        #plt.title(titles[i*2+1]), plt.xticks([]), plt.yticks([])
-    plt.show()
-    #"""
-
+if __name__ == "__main__":
+  checkImage("capt0000.jpg")

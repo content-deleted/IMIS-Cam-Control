@@ -60,9 +60,8 @@ import gphoto2 as gp
 THISSCRIPTDIR = os.path.dirname(os.path.realpath(__file__))
 sys.path.insert(1,THISSCRIPTDIR)
 ccgoo = __import__('camera-config-gui-oo')
-outline = __import__('SampleOutline')
+outline = __import__('outline')
 glare = __import__('SampleGlareDetect')
-#positioning = __import__('SamplePositioning')+
 NOCAMIMG = "cam-conf-no-cam.png"
 APPNAME = "IMIS Control System"
 
@@ -257,12 +256,12 @@ def do_capture_image(camera):
     camera_file = camera.file_get(
         path.folder, path.name, gp.GP_FILE_TYPE_NORMAL)
     # saving of image implied in current directory:
-    camera_file.save("Testo.jpg")
+    camera_file.save(path.name)
     camera.file_delete(path.folder, path.name)
     # reset configuration
     capturetarget_cfg.set_value(capturetarget)
     camera.set_config(cfg)
-    return "Testo.jpg"#path.name
+    return path.name#path.name
 
 
 def get_json_filters(args):
@@ -1116,7 +1115,7 @@ class MainWindow(QtWidgets.QMainWindow):
         glare.checkImage(imgpathname)
 
         # swap this path name with one of the saved cv2 images to load it instead
-        image = Image.open(imgpathname)
+        image = Image.open("contour_edge.png")#imgpathname)
         image.load()
         self.new_image_sig.emit(image)
         self.lastImageType = 1
