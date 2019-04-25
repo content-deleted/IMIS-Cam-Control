@@ -904,21 +904,21 @@ class MainWindow(QtWidgets.QMainWindow):
         CaptureButton.setFixedSize(QtCore.QSize(btnSize,btnSize))
         CaptureButton.setFlat(True)
         CaptureButton.setStyleSheet("background-color: transparent;")
-        CaptureButton.move(1150,700)
+        CaptureButton.move(1200,700)
         CaptureButton.clicked.connect(self._capture_image)
 
         # Preview button
-        PreviewButton = QPushButton('', self)
-        PreviewButton.setToolTip('Take photo')
-        PreviewButton.setIcon(QtGui.QIcon('IMIS_Capture_Icon.png'))
-        PreviewButton.setCheckable(True)
-        btnSize = 100
-        PreviewButton.setIconSize(QtCore.QSize(btnSize,btnSize))
-        PreviewButton.setFixedSize(QtCore.QSize(btnSize,btnSize))
-        PreviewButton.setFlat(True)
-        PreviewButton.setStyleSheet("background-color: transparent;")
-        PreviewButton.move(200,750)
-        PreviewButton.clicked.connect(self.continuous)
+        self.PreviewButton = QPushButton('', self)
+        self.PreviewButton.setToolTip('Take photo')
+        self.PreviewButton.setIcon(QtGui.QIcon('PreviewOFF.png'))
+        self.PreviewButton.setCheckable(True)
+        btnSize = 150
+        self.PreviewButton.setIconSize(QtCore.QSize(btnSize,btnSize))
+        self.PreviewButton.setFixedSize(QtCore.QSize(btnSize,btnSize))
+        self.PreviewButton.setFlat(True)
+        self.PreviewButton.setStyleSheet("background-color: transparent;")
+        self.PreviewButton.move(50,700)
+        self.PreviewButton.clicked.connect(self.continuous)
 
         self.camera = gp.Camera()
         self.ctx = gp.Context()
@@ -957,8 +957,10 @@ class MainWindow(QtWidgets.QMainWindow):
         if self.running:
             self.running = False
             self.updateStatusBar() # clear last singleStatusMsg - clears fps upon stop
+            self.PreviewButton.setIcon(QtGui.QIcon('PreviewOFF.png'))
             return
         self.running = True
+        self.PreviewButton.setIcon(QtGui.QIcon('PreviewON.png'))
         self._do_continuous()
 
     def CameraHandlerInit(self):
