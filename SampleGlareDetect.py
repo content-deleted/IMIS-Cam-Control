@@ -67,6 +67,16 @@ def checkImage(imageName):
         #"""
         print("Glare is detected.")
         #print("val", maxVal)
+
+        #XXX: slap the glare threshold data onto the image from ouline
+        im = cv2.imread("contour_edge.png")
+        thr_r = cv2.cvtColor(thr.copy(), cv2.COLOR_GRAY2RGB)
+        thr_r[np.where(thr == 255)] = [0,0,255]
+        im[np.where(thr == 255)] = thr_r[np.where(thr == 255)]
+        
+        cv2.imwrite('contour_edge.png', im)
+            
+        '''
         #plot Threshold and circled Glare
         images = [thr,orig]
         titles = ['Detected Glare (in white)','Original Image']
@@ -79,6 +89,7 @@ def checkImage(imageName):
             #plt.subplot(2,2,i*2+1),plt.imshow(images[i*2+1],'gray')
             #plt.title(titles[i*2+1]), plt.xticks([]), plt.yticks([])
         plt.show()
+        '''
         #"""
     else:
         print("No glare detected.")
