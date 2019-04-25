@@ -33,7 +33,7 @@ def outlineImage(filePath):
   #cv.imshow('Canny',edges)
 
   # Get the red channel
-  img, _, _ = cv.split(img)
+  _, _, img = cv.split(img)
 
   #Apply Gaussian Blur to image
   blur = cv.GaussianBlur(img,(13,13),0)
