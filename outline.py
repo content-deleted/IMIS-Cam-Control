@@ -18,7 +18,8 @@ def outlineImage(filePath):
   im = cv.imread(filePath)
 
   #Convert to grayscale
-  img = cv.cvtColor(im, cv.COLOR_BGR2GRAY)
+  #img = cv.cvtColor(im, cv.COLOR_BGR2GRAY)
+  img = im
 
   #Save a copy of the original image
   copy = im.copy()
@@ -30,6 +31,9 @@ def outlineImage(filePath):
   #edges = cv.Canny(th,140,150)
   edges = cv.Canny(img,50,100)
   #cv.imshow('Canny',edges)
+
+  # Get the red channel
+  img, _, _ = cv.split(img)
 
   #Apply Gaussian Blur to image
   blur = cv.GaussianBlur(img,(13,13),0)

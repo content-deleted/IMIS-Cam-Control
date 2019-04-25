@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 # python-gphoto2 - Python interface to libgphoto2
@@ -257,6 +257,12 @@ def do_capture_image(camera):
         path.folder, path.name, gp.GP_FILE_TYPE_NORMAL)
     # saving of image implied in current directory:
     camera_file.save(path.name)
+
+    # clear out the event queue
+    typ, data = camera.wait_for_event(200)
+    while typ != gp.GP_EVENT_TIMEOUT:
+        typ, data = camera.wait_for_event(1)
+
     camera.file_delete(path.folder, path.name)
     # reset configuration
     capturetarget_cfg.set_value(capturetarget)
@@ -1111,7 +1117,12 @@ class MainWindow(QtWidgets.QMainWindow):
         imgpathname = os.path.realpath(imgfilename)
         
         # Imis feedback
+        self.singleStatusMsg = "Checking sample position - wait ..."
+        self.updateStatusBar() # clear last singleStatusMsg
         outline.outlineImage(imgpathname)
+
+        self.singleStatusMsg = "Checking for glare - wait ..."
+        self.updateStatusBar() # clear last singleStatusMsg
         glare.checkImage(imgpathname)
 
         # swap this path name with one of the saved cv2 images to load it instead
