@@ -119,7 +119,6 @@ def outlineImage(filePath):
   row_tolerance = int(rows*tolerance)
   column_tolerance = int(columns*tolerance)
 
-  error = 0
   errorMessage = ""
   low_vert_range = boundary_s - row_tolerance
   high_vert_range = boundary_s + row_tolerance
@@ -127,33 +126,18 @@ def outlineImage(filePath):
   high_horiz_range = boundary_w + column_tolerance
 
   if(not(boundary_n >= low_vert_range and boundary_n < high_vert_range)):
-      error = 1
       errorMessage += "ERROR: Image is not centered vertically.\n"
       if(boundary_n > boundary_s):
           errorMessage += "FIX: Please move the sample North.\n\n"
       else:
           errorMessage += "FIX: Please move the sample South.\n\n"
   if(not(boundary_e >= low_horiz_range and boundary_e < high_horiz_range)):
-      error = 1
       errorMessage += "ERROR: Image is not centered horizontally.\n"
       if(boundary_e > boundary_w):
           errorMessage += "FIX: Please move the sample East.\n"
       else:
           errorMessage += "FIX: Please move the sample West.\n"
-  if(error):
-      print(errorMessage)
-      #"""
-      # make a new popup
-      msg = QMessageBox()
-      msg.setIcon(QMessageBox.Critical)
-
-      msg.setText(errorMessage)
-      msg.setWindowTitle("Positioning Error")
-      #msg.setDetailedText("The details are as follows:")
-      msg.setStandardButtons(QMessageBox.Ok)
-      msg.setEscapeButton(QMessageBox.Close)
-      msg.exec_() 
-      #"""
+      
 
   """
   leftmost = tuple(cnt[cnt[:,:,0].argmin()][0])
@@ -165,6 +149,8 @@ def outlineImage(filePath):
   cv.imwrite('contour_edge.png', copy)
   cv.waitKey(0)
   cv.destroyAllWindows()
+
+  return errorMessage
 
 if __name__ == "__main__":
   app = QApplication([])

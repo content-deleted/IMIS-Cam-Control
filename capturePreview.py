@@ -53,7 +53,7 @@ from PIL import Image, ImageDraw, ImageFont
 from PyQt5 import QtCore, QtWidgets, QtGui
 from PyQt5.QtCore import Qt, pyqtSignal, QPoint, QRect
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QFileDialog, QPushButton
+from PyQt5.QtWidgets import QFileDialog, QPushButton, QMessageBox
 
 import gphoto2 as gp
 
@@ -1134,8 +1134,8 @@ class MainWindow(QtWidgets.QMainWindow):
         # Imis feedback
         self.singleStatusMsg = "Checking sample position - wait ..."
         self.updateStatusBar() # clear last singleStatusMsg
-        outline.outlineImage(imgpathname)
-
+        errorMsg = outline.outlineImage(imgpathname)
+        print(errorMsg)
         self.singleStatusMsg = "Checking for glare - wait ..."
         self.updateStatusBar() # clear last singleStatusMsg
         glare.checkImage(imgpathname)
@@ -1149,6 +1149,18 @@ class MainWindow(QtWidgets.QMainWindow):
         endts = time.time()
         self.singleStatusMsg = "Captured image: {} [{:.3f} s]".format(imgpathname, endts-startts)
         self.updateStatusBar()
+        print("before")
+
+        # after we've updated everything display any errors
+        if errorMsg != "":
+            errorPopup = QMessageBox()
+            errorPopup.setIcon(QMessageBox.Critical)
+            errorPopup.setText(errorMsg)
+            errorPopup.setWindowTitle("Positioning Error")
+            #errorPopup.setDetailedText("") #unused 
+            errorPopup.setStandardButtons(QMessageBox.Ok)
+            errorPopup.setEscapeButton(QMessageBox.Close)
+            errorPopup.exec_()
 
     def _send_file(self, camera_file):
         file_data = camera_file.get_data_and_size()
