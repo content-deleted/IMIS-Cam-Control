@@ -907,6 +907,19 @@ class MainWindow(QtWidgets.QMainWindow):
         CaptureButton.move(1150,700)
         CaptureButton.clicked.connect(self._capture_image)
 
+        # Preview button
+        PreviewButton = QPushButton('', self)
+        PreviewButton.setToolTip('Take photo')
+        PreviewButton.setIcon(QtGui.QIcon('IMIS_Capture_Icon.png'))
+        PreviewButton.setCheckable(True)
+        btnSize = 100
+        PreviewButton.setIconSize(QtCore.QSize(btnSize,btnSize))
+        PreviewButton.setFixedSize(QtCore.QSize(btnSize,btnSize))
+        PreviewButton.setFlat(True)
+        PreviewButton.setStyleSheet("background-color: transparent;")
+        PreviewButton.move(200,750)
+        PreviewButton.clicked.connect(self.continuous)
+
         self.camera = gp.Camera()
         self.ctx = gp.Context()
         QtWidgets.QApplication.postEvent(
@@ -1142,7 +1155,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.new_image_sig.emit(image)
         if self.lastImageType != 0:
             self.image_display.fitInView() # reset previous offsets..
-            self.image_display.resetZoom() # .. then back to zoom_original for preview img
+            #self.image_display.resetZoom() # .. then back to zoom_original for preview img
             self.lastImageType = 0
 
     @QtCore.pyqtSlot(object)

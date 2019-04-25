@@ -80,7 +80,7 @@ def outlineImage(filePath):
 
   #cv.drawContours(closing, [cnt], 0, (120, 120, 120), 3, maxLevel = 0)
   #3 is thickness
-  cv.drawContours(copy, [cnt], 0, (120, 255, 255), 30, maxLevel = 0)
+  cv.drawContours(copy, [cnt], 0, (120, 255, 255), 15, maxLevel = 0)
 
   #Check if sample is centered
   rows, columns = th.shape
@@ -114,9 +114,10 @@ def outlineImage(filePath):
   boundary_s = rows-bottommost[0]#max_row
   boundary_e = columns-rightmost[0]#max_col
   boundary_w = leftmost[0]#min_col
-  
-  row_tolerance = int(rows*.05)
-  column_tolerance = int(columns*0.05)
+
+  tolerance = 0.1
+  row_tolerance = int(rows*tolerance)
+  column_tolerance = int(columns*tolerance)
 
   error = 0
   errorMessage = ""
