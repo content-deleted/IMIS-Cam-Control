@@ -120,9 +120,9 @@ def outlineImage(filePath):
   column_tolerance = int(columns*tolerance)
 
   errorMessage = ""
-  low_vert_range = boundary_s - row_tolerance
+  low_vert_range = max(boundary_s - row_tolerance, 0)
   high_vert_range = boundary_s + row_tolerance
-  low_horiz_range = boundary_w - column_tolerance
+  low_horiz_range = max(boundary_w - column_tolerance, 0)
   high_horiz_range = boundary_w + column_tolerance
 
   if(not(boundary_n >= low_vert_range and boundary_n < high_vert_range)):
