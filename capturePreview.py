@@ -251,7 +251,7 @@ def do_capture_image(camera):
     capturetarget_cfg.set_value('Internal RAM')
     camera.set_config(cfg)
     # do capture
-    path = camera.capture(gp.GP_CAPTURE_IMAGE)
+    path = get_stamped_filename(camera.capture(gp.GP_CAPTURE_IMAGE), time.time())
     print('capture cam path: {} {}'.format(path.folder, path.name))
     camera_file = camera.file_get(
         path.folder, path.name, gp.GP_FILE_TYPE_NORMAL)
